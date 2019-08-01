@@ -20,9 +20,9 @@ function Square(props) {
 
 function WinningSquare(props) {
   return (
-    <button className='winningColor' onClick={props.onClick}>
+    <button className='square' style={props.winningColor} onClick={props.onClick} >
       {props.value}
-    </button>
+    </button >
   );
 }
 
@@ -32,65 +32,95 @@ class Board extends React.Component {
 
     this.state = {
       squares: Array(9).fill(null),
-      xIsNext: true,
-      initialPlayer: 'X',
 
-    };
+      selectedOptionIsX: 'X',
+      xIsNext: 'true',
+      winningColor: {
+        color: 'pink',
+      },
+      resetButtonColors: {
+        color: '#007bff',
+        backgroundColor: '#fff',
+      }
+
+    }
   }
 
   handleClick(i) {
 
-    const squares = this.state.squares.slice();
+    const squares = this.state.squares.slice()
     if (calculateWinner(squares) || squares[i]) {
-      return;
+      return
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    squares[i] = this.state.xIsNext ? 'X' : 'O'
 
-    this.setState({ squares: squares, xIsNext: !this.state.xIsNext, });
+    this.setState({ squares: squares, xIsNext: !this.state.xIsNext, })
+
+  }
+
+
+
+  handleOptionChange = changeEvent => {
+
+    this.setState({
+      selectedOptionIsX: changeEvent.target.value
+    })
+    this.setState({ xIsNext: (this.state.selectedOptionIsX === 'X' ? false : true) })
+    console.log('after', this.state.selectedOptionIsX)
   }
 
   renderSquare(i) {
-    const winner = calculateWinner(this.state.squares);
-
+    const winner = calculateWinner(this.state.squares)
+    // console.log(winner)
     if (winner !== null && winner !== 'draw' && winner[1].includes(i)) {
 
       return (<WinningSquare
         value={this.state.squares[i]}
         onClick={() => this.handleClick(i)}
-      />);
+        winningColor={this.state.winningColor}
+      />)
     }
     return (<Square
       value={this.state.squares[i]}
       onClick={() => this.handleClick(i)}
-    />);
+    />)
   }
+
+
 
   renderChoosePlayer() {
 
     return (
+
       <form className='choosePlayer'>
 
         <div className="form-check">
           <label>
             <input
               type="radio"
-              value="X"
-            // checked = {xIsNext}
+              value='X'
+              checked={this.state.selectedOptionIsX === 'X'}
+              onChange={this.handleOptionChange}
+              className="form-check-input"
             />
-            Start with: X
-          </label>
+            Option X
+        </label>
         </div>
 
         <div className="form-check">
           <label>
             <input
               type="radio"
-              value="O"
-
+              value='O'
+              checked={this.state.selectedOptionIsX === 'O'}
+              onChange={this.handleOptionChange}
+              className="form-check-input"
             />
-            Start with: O
-          </label>
+            Option O
+        </label>
         </div>
+
+
       </form>
 
     );
@@ -131,14 +161,11 @@ class Board extends React.Component {
 
       } else {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O')
-
       }
     }
     return (
       <div>
-
         <div id='status' className="status">{status}</div>
-
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
@@ -155,16 +182,45 @@ class Board extends React.Component {
           {this.renderSquare(8)}
         </div>
 
-        <button className='resetButton' onClick={() => {
-          this.setState({ squares: Array(9).fill(null) }); document.getElementsByClassName('resetButton').item(0).style.backgroundColor = 'white';
-          document.getElementsByClassName('resetButton').item(0).style.color = '#007bff'
+        <button className='resetButton' style={this.state.resetButtonColors} onClick={() => {
+          this.setState({ squares: Array(9).fill(null) })
+          this.setState({ xIsNext: (this.state.selectedOptionIsX === 'X' ? true : false) })
         }} >Reset here</button>
 
         <div>{choosePlayerButton}</div>
       </div>
-    );
+    )
   }
 }
+
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ]
+  // console.log('hellllo', this.state.xIsNext)
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i]
+    if ((squares[a] === squares[b]) && (squares[b] === squares[c]) && (squares[a] !== null)) {
+      return [squares[a], lines[i]]
+    }
+
+  }
+
+  if (squares.includes(null) !== true) {
+
+    return 'draw'
+  }
+  return null
+}
+
+
 
 class Game extends React.Component {
   render() {
@@ -178,38 +234,54 @@ class Game extends React.Component {
           <ol>{/* TODO */}</ol>
         </div>
       </div>
-    );
+    )
   }
 }
 
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if ((squares[a] === squares[b]) && (squares[b] === squares[c]) && (squares[a] !== null)) {
-      return [squares[a], lines[i]];
-    }
-
-  }
-
-  if (squares.includes(null) !== true) {
-    return 'draw';
-  }
-  return null;
-}
 
 
 
+// function calculateWinner(squares) {
+
+//   const lines = [
+//     [0, 1, 2],
+//     [3, 4, 5],
+//     [6, 7, 8],
+//     [0, 3, 6],
+//     [1, 4, 7],
+//     [2, 5, 8],
+//     [0, 4, 8],
+//     [2, 4, 6],
+//   ]
+
+//   // console.log('Square is : ', squares)
+//   // if (!lines.includes(squares))
+//   //   return null
+
+//   // else
+//   //   return 'heyyyyy'
 
 
-export default App;
+
+//   return lines.includes(squares)
+//   squares = [x, b, y]
+
+//   const result = lines.map(line => {
+//     const [a, b, c] = line
+//     if ((squares[a] === squares[b]) && (squares[b] === squares[c]) && (squares[a] !== null)) {
+//       return [squares[a], line]
+//     } else return null
+//   })
+
+//   if (result === null)
+//     return squares.includes(null) !== true ? 'draw' : null
+
+// }
+
+
+
+
+
+
+export default App

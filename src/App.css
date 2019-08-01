@@ -22,15 +22,15 @@ ol, ul {
   color: gray;
   border: 1px solid #999;
   float: left;
-  font-size: 64px;
+  font-size: 128px;
   font-weight: bold;
   line-height: 34px;
-  height: 100px;
+  height: 200px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 100px;
+  width: 200px;
 }
 
 .square:focus {
@@ -52,8 +52,8 @@ ol, ul {
 
 .resetButton {
   margin-top: 20px;
-  color: #007bff;
-  background-color: white;
+  /* color: #007bff;
+  background-color: white; */
   border-color: #007bff;
   display: inline-block;
   font-weight: 400;
@@ -67,21 +67,7 @@ ol, ul {
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
-.winningColor {
-  background: #fff;
-  color: pink;
-  border: 1px solid #999;
-  float: left;
-  font-size: 64px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 100px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 100px;
-}
+
 
 .choosePlayer{
   
