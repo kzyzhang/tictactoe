@@ -185,6 +185,8 @@ class Board extends React.Component {
         <button className='resetButton' style={this.state.resetButtonColors} onClick={() => {
           this.setState({ squares: Array(9).fill(null) })
           this.setState({ xIsNext: (this.state.selectedOptionIsX === 'X' ? true : false) })
+          document.getElementsByClassName('resetButton').item(0).style.backgroundColor = '#fff';
+          document.getElementsByClassName('resetButton').item(0).style.color = '#007bff'
         }} >Reset here</button>
 
         <div>{choosePlayerButton}</div>
