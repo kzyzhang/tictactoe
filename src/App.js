@@ -114,7 +114,7 @@ class Board extends React.Component {
     this.setState({
       selectedOptionIsX: changeEvent.target.value, xIsNext: (this.state.selectedOptionIsX === 'true' ? false : true),
 
-    }, () => { this.setState({ status: 'First player: ' + (this.state.selectedOptionIsX === 'true' ? 'X' : 'O') }, console.log(this.state.selectedOptionIsX)) })
+    }, () => { this.setState({ status: 'First player: ' + (this.state.selectedOptionIsX === 'true' ? 'X' : 'O') }) })
 
   }
 
@@ -151,7 +151,7 @@ class Board extends React.Component {
 
 
   renderChoosePlayer() {
-    console.log('renderchooseplayer function')
+
     return (
       <form className='choosePlayer'>
 
