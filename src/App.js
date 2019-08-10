@@ -32,15 +32,18 @@ class Board extends React.Component {
 
     this.state = {
       squares: Array(9).fill(null),
-
-      selectedOptionIsX: 'X',
-      xIsNext: 'true',
+      status: 'First player: X',
+      selectedOptionIsX: 'true',
+      xIsNext: true,
       winningColor: {
         color: 'pink',
       },
       resetButtonColors: {
         color: '#007bff',
         backgroundColor: '#fff',
+      },
+      choosePlayerButton: {
+        display: '',
       }
 
     }
@@ -54,24 +57,83 @@ class Board extends React.Component {
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O'
 
-    this.setState({ squares: squares, xIsNext: !this.state.xIsNext, })
+    this.setState({ squares: squares, xIsNext: !this.state.xIsNext, }, () => {
+      this.handleStatus()
+    })
 
   }
+
+  handleStatus() {
+    this.setState({ choosePlayerButton: { display: 'none' } })
+    const winner = calculateWinner(this.state.squares)
+    if (winner != null) {
+      if (winner === 'draw') {
+        this.setState({ status: 'No one won' })
+      } else {
+        this.setState({ status: 'Winner: ' + winner[0] })
+      }
+      this.setState({ resetButtonColors: { backgroundColor: '#007bff', color: '#fff' } })
+
+    } else {
+
+      let counter = 0;
+      for (let n = 0; n < (this.state.squares).length; n++) {
+        if (Array(9).fill(null)[n] === this.state.squares[n]) {
+          counter += 1
+        }
+      }
+      if (counter === 9) {
+        this.setState({ status: 'Hello player: ' + (this.state.xIsNext ? 'X' : 'O') })
+      } else {
+        this.setState({ status: 'Next player: ' + (this.state.xIsNext ? 'X' : 'O') })
+      }
+    }
+
+  }
+
+  // ^sort out????
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
   handleOptionChange = changeEvent => {
 
     this.setState({
-      selectedOptionIsX: changeEvent.target.value
-    })
-    this.setState({ xIsNext: (this.state.selectedOptionIsX === 'X' ? false : true) })
-    console.log('after', this.state.selectedOptionIsX)
+      selectedOptionIsX: changeEvent.target.value, xIsNext: (this.state.selectedOptionIsX === 'true' ? false : true),
+
+    }, () => { this.setState({ status: 'First player: ' + (this.state.selectedOptionIsX === 'true' ? 'X' : 'O') }, console.log(this.state.selectedOptionIsX)) })
+
+  }
+
+  handleReset() {
+
+    this.setState({
+      squares: Array(9).fill(null),
+
+      resetButtonColors: { backgroundColor: '#fff', color: '#007bff' },
+      selectedOptionIsX: (this.state.selectedOptionIsX === 'true' ? 'false' : 'true'),
+      choosePlayerButton: { display: '' }
+    }, () => { this.setState({ status: 'First player: ' + (this.state.selectedOptionIsX === 'true' ? 'X' : 'O'), xIsNext: (this.state.selectedOptionIsX === 'true' ? true : false) }) }
+
+    )
   }
 
   renderSquare(i) {
     const winner = calculateWinner(this.state.squares)
-    // console.log(winner)
+
     if (winner !== null && winner !== 'draw' && winner[1].includes(i)) {
 
       return (<WinningSquare
@@ -80,6 +142,7 @@ class Board extends React.Component {
         winningColor={this.state.winningColor}
       />)
     }
+
     return (<Square
       value={this.state.squares[i]}
       onClick={() => this.handleClick(i)}
@@ -87,85 +150,50 @@ class Board extends React.Component {
   }
 
 
-
   renderChoosePlayer() {
-
+    console.log('renderchooseplayer function')
     return (
-
       <form className='choosePlayer'>
 
         <div className="form-check">
           <label>
             <input
               type="radio"
-              value='X'
-              checked={this.state.selectedOptionIsX === 'X'}
+              value={true}
               onChange={this.handleOptionChange}
+              checked={this.state.selectedOptionIsX === 'true'}
+
               className="form-check-input"
             />
             Option X
-        </label>
+          </label>
         </div>
 
         <div className="form-check">
           <label>
             <input
               type="radio"
-              value='O'
-              checked={this.state.selectedOptionIsX === 'O'}
+              value={false}
               onChange={this.handleOptionChange}
+              checked={this.state.selectedOptionIsX === 'false'}
               className="form-check-input"
             />
             Option O
-        </label>
+          </label>
         </div>
 
 
       </form>
 
-    );
+    )
   }
 
 
   render() {
-    const winner = calculateWinner(this.state.squares);
 
-    let status;
-    let choosePlayerButton;
-    if (winner != null) {
-      if (winner === 'draw') {
-        status = 'No one won'
-      } else {
-        // const winningArray = calculateWinner(this.state.squares)[1];
-        status = 'Winner: ' + winner[0];
-      }
-      document.getElementsByClassName('resetButton').item(0).style.backgroundColor = '#007bff';
-      document.getElementsByClassName('resetButton').item(0).style.color = '#fff'
-    } else {
-      // console.log(Array(9).fill(null)===this.state.squares)
-
-      let n;
-      let counter = 0;
-      for (n = 0; n < (this.state.squares).length; n++) {
-        if (Array(9).fill(null)[n] === this.state.squares[n]) {
-          counter += 1
-        }
-      }
-
-      if (counter === 9) {
-        status = 'First player: ' + (this.state.xIsNext ? 'X' : 'O')
-        choosePlayerButton = this.renderChoosePlayer()
-        if (this.state.xIsNext === true) {
-          console.log('next player: x')
-        } else { console.log('next player: o') }
-
-      } else {
-        status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O')
-      }
-    }
     return (
       <div>
-        <div id='status' className="status">{status}</div>
+        <div id='status' className="status">{this.state.status}</div>
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
@@ -182,14 +210,10 @@ class Board extends React.Component {
           {this.renderSquare(8)}
         </div>
 
-        <button className='resetButton' style={this.state.resetButtonColors} onClick={() => {
-          this.setState({ squares: Array(9).fill(null) })
-          this.setState({ xIsNext: (this.state.selectedOptionIsX === 'X' ? true : false) })
-          document.getElementsByClassName('resetButton').item(0).style.backgroundColor = '#fff';
-          document.getElementsByClassName('resetButton').item(0).style.color = '#007bff'
-        }} >Reset here</button>
+        <button className='resetButton' style={this.state.resetButtonColors} onClick={() => this.handleReset()} >Reset here</button>
 
-        <div>{choosePlayerButton}</div>
+        <div style={this.state.choosePlayerButton}>{this.renderChoosePlayer()}</div>
+
       </div>
     )
   }
@@ -206,7 +230,7 @@ function calculateWinner(squares) {
     [0, 4, 8],
     [2, 4, 6],
   ]
-  // console.log('hellllo', this.state.xIsNext)
+
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i]
     if ((squares[a] === squares[b]) && (squares[b] === squares[c]) && (squares[a] !== null)) {
@@ -232,7 +256,7 @@ class Game extends React.Component {
           <Board />
         </div>
         <div className="game-info">
-          <div >{}</div>
+          <div ></div>
           <ol>{/* TODO */}</ol>
         </div>
       </div>
