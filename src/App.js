@@ -76,38 +76,15 @@ class Board extends React.Component {
 
     } else {
 
-      let counter = 0;
+
       for (let n = 0; n < (this.state.squares).length; n++) {
         if (Array(9).fill(null)[n] === this.state.squares[n]) {
-          counter += 1
+
         }
       }
-      if (counter === 9) {
-        this.setState({ status: 'Hello player: ' + (this.state.xIsNext ? 'X' : 'O') })
-      } else {
-        this.setState({ status: 'Next player: ' + (this.state.xIsNext ? 'X' : 'O') })
-      }
+      this.setState({ status: 'Next player: ' + (this.state.xIsNext ? 'X' : 'O') })
     }
-
   }
-
-  // ^sort out????
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   handleOptionChange = changeEvent => {
 
@@ -162,7 +139,6 @@ class Board extends React.Component {
               value={true}
               onChange={this.handleOptionChange}
               checked={this.state.selectedOptionIsX === 'true'}
-
               className="form-check-input"
             />
             Option X
@@ -181,8 +157,6 @@ class Board extends React.Component {
             Option O
           </label>
         </div>
-
-
       </form>
 
     )
@@ -193,27 +167,30 @@ class Board extends React.Component {
 
     return (
       <div>
-        <div id='status' className="status">{this.state.status}</div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
+        <div id='board'>
+          <div className="board-row">
+            {this.renderSquare(0)}
+            {this.renderSquare(1)}
+            {this.renderSquare(2)}
+          </div>
+          <div className="board-row">
+            {this.renderSquare(3)}
+            {this.renderSquare(4)}
+            {this.renderSquare(5)}
+          </div>
+          <div className="board-row">
+            {this.renderSquare(6)}
+            {this.renderSquare(7)}
+            {this.renderSquare(8)}
+          </div>
         </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
+        <div id='accessories'>
+          <div id='status' className="status">{this.state.status}</div>
+
+          <div style={this.state.choosePlayerButton}>{this.renderChoosePlayer()}</div>
+
+          <button className='resetButton' style={this.state.resetButtonColors} onClick={() => this.handleReset()} >Reset here</button>
         </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-
-        <button className='resetButton' style={this.state.resetButtonColors} onClick={() => this.handleReset()} >Reset here</button>
-
-        <div style={this.state.choosePlayerButton}>{this.renderChoosePlayer()}</div>
-
       </div>
     )
   }
@@ -251,15 +228,8 @@ function calculateWinner(squares) {
 class Game extends React.Component {
   render() {
     return (
-      <div className="game">
-        <div className="game-board">
-          <Board />
-        </div>
-        <div className="game-info">
-          <div ></div>
-          <ol>{/* TODO */}</ol>
-        </div>
-      </div>
+      <Board />
+
     )
   }
 }
@@ -304,10 +274,5 @@ class Game extends React.Component {
 //     return squares.includes(null) !== true ? 'draw' : null
 
 // }
-
-
-
-
-
 
 export default App
